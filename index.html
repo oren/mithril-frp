@@ -29,7 +29,7 @@
        // Cheat the module system a bit.
        return {
          controller: function() {
-           controller().onValue(function(newView) {
+           controller().onValue(function(newView) {  // each time that view receives a new value, the Mithril prop is updated. and a redraw is triggered.
              m.startComputation();
              view(newView);
              m.endComputation();
