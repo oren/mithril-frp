@@ -20,6 +20,8 @@
        return m.withAttr(attr, withEmit(emitter));
      };
 
+     // this helper function is a glue.  It watches for changes to the view and renders it.
+     // the bound variable 'controller' returns a Kefir observable that contains the view.
      function makeModule(controller) {
        var view = m.prop([]);
 
