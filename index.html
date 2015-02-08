@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <script type="text/javascript" src="kefir.js"></script>
+    <script type="text/javascript" src="mithril.js"></script>
+    <script type="text/javascript">
+     var K = Kefir;
+
+     function add(a, b) {
+       return a + b;
+     }
+
+     function withEmit(emitter) {
+       return emitter.emit.bind(emitter);
+     }
+
+     function withEmitAttr(attr, emitter) {
+       return m.withAttr(attr, withEmit(emitter));
+     };
+
+     function makeModule(controller) {
+       var view = m.prop([]);
+
+       // Cheat the module system a bit.
+       return {
+         controller: function() {
+           controller().onValue(function(newView) {
+             m.startComputation();
+             view(newView);
+             m.endComputation();
+           });
+         },
+         view: function() {
+           return view();
+         }
+       };
+     }
+
+     function controller() {
+       // Graph roots
+       var up = K.emitter();
+       var down = K.emitter();
+       var text = K.emitter();
+
+       // State
+       var counter = K.merge([
+         up.mapTo(1),
+         down.mapTo(-1)
+       ]).scan(add, 0);
+
+       // View
+       return K.combine([
+         counter,
+         text.toProperty("")
+       ], function(counter, currentText) {
+         return [
+           m("button", {
+             onclick: withEmit(up)
+           }, "up"),
+           m("button", {
+             onclick: withEmit(down)
+           }, "down"),
+           m("span", counter),
+           m("input", {
+             type: "text",
+             oninput: withEmitAttr("value", text),
+             value: currentText
+           }),
+           m("p", currentText)
+         ];
+
