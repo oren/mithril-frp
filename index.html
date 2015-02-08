@@ -41,6 +41,9 @@
        };
      }
 
+     // thunk = function with no args
+     // forms a closure around the state and returns the view observable
+     // the thunk is evaluated, and the 'view' returned is a Kefir observable
      function controller() {
        // Graph roots
        var up = K.emitter();
